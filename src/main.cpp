@@ -7,6 +7,8 @@ int main( int argc, char *argv[] )
 {
     MHS5200Driver signalGenerator;
     
+    signalGenerator.setDebugOutput(true);
+    
     if ( signalGenerator.connect("/dev/ttyUSB0") ) {
         
         

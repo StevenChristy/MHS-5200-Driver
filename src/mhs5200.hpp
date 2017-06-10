@@ -1,5 +1,5 @@
-#define MHS5200_DEVICE_BAUD_RATE 57600
-#define MHS5200_DEBUG_FN printf
+#include <termios.h>
+
 #define MHS5200_BUFFER_SIZE 128
 
 
@@ -7,12 +7,17 @@
 class MHS5200Driver
 {
 protected:
+    struct termios saveTTY;
     int m_fileDescriptor;
-    char responseBuffer[MHS5200_BUFFER_SIZE];
-    double maxAmplitude;
-    double attenuationMax;
-    double minAmplitude;
-    
+    char m_responseBuffer[MHS5200_BUFFER_SIZE];
+    double m_maxAmplitude;
+    double m_attenuationMax;
+    double m_minAmplitude;
+    int m_baudRate;
+    bool m_outputDebugInfo;
+
+    void debugInfo(const char *type, int bufferLen, const char *buffer);
+    void systemError(const char *fn, const char *msgFormat, ...);
 public:
     /**
      * Waves types supported by the MHS-5200.
@@ -221,5 +226,12 @@ public:
      * @return String containing the return value less the ':' and traiiling \r\n or the string value "ok" when the device responds with ok\r\n. On error or timeout this will be a nullptr.
      */
     const char *rawResponse(int timeout = 10);
+    
+    /**
+     *  Turns debug output on or off.
+     * @param onOff True for on, false for off.
+     */
+    void setDebugOutput( bool onOff );
+    
 };
 
