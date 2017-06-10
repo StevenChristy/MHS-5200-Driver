@@ -4,7 +4,7 @@ A small project to create a Linux commandline interface for the MHS-5200 Signal 
 
 ## Usage
 
-Usage: /home/steven/Projects/MHS-5200-Driver/build/mhs5200 <tty device> <command list>
+`Usage: mhs5200 <tty device> <command list>
 
  Command List:
 	-?, --help			Shows this information and terminate.
@@ -30,11 +30,11 @@ Usage: /home/steven/Projects/MHS-5200-Driver/build/mhs5200 <tty device> <command
 		reversesaw		Reverse sawtooth / downward ramp waveform.
 		arb <0-15>		Arbitrary waveform (0-15).
 
-	Using a wave form command turns off inverse.
+	Using a wave form command turns off inverse.`
 
 Most commands are executed in the order given so commands like channel will affect certain subsequent commands. 
 
-Example: /home/steven/Projects/MHS-5200-Driver/build/mhs5200 /dev/ttyUSB0 channel 1 off square inverse freq 12345678.12 on 
+Example: mhs5200 /dev/ttyUSB0 channel 1 off square inverse freq 12345678.12 on 
 
 The above example turns off channel 1, sets waveform to inverted sine wave of a given frequency then turns the channel back on.
 
