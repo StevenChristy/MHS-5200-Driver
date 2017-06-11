@@ -264,7 +264,7 @@ int main( int argc, const char *argv[] )
                 }
         
                 commandChain.push_back([&,val]() {
-                    signalGenerator.setOffset(currentChannel, val);
+                    signalGenerator.setPhaseOffset(currentChannel, val);
                 });
             } else {
                 raise_expected_more_argments(argv[cmdarg]);
@@ -300,7 +300,7 @@ int main( int argc, const char *argv[] )
                 }
                 
                 commandChain.push_back([&,val]() {
-                    signalGenerator.setAmplitude(currentChannel, val);
+                    signalGenerator.setDutyCycle(currentChannel, val);
                 });
             } else {
                 raise_expected_more_argments(argv[cmdarg]);
@@ -318,7 +318,7 @@ int main( int argc, const char *argv[] )
                 }
                 
                 commandChain.push_back([&,val]() {
-                    signalGenerator.setAmplitude(currentChannel, val);
+                    signalGenerator.setFrequency(currentChannel, val);
                 });
             } else {
                 raise_expected_more_argments(argv[cmdarg]);
@@ -381,14 +381,15 @@ int main( int argc, const char *argv[] )
             i->second(argc, argv);
         }
         
-        currentChannel = signalGenerator.getCurrentChannel();
-        
         if ( signalGenerator.connect(deviceName) ) {
+            currentChannel = signalGenerator.getCurrentChannel();            
             for ( auto &cmd : commandChain )
                 cmd();
         }
     } catch ( string &s ) {
         cout << s.c_str() << endl;
         cout << "Terminated." << endl;
+        return 1;
     }
+    return 0;
 }

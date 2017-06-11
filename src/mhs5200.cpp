@@ -67,7 +67,7 @@ void MHS5200Driver::disconnect() {
 }
 
 bool MHS5200Driver::connect(const char *deviceName) {
-    int fd = open(deviceName, O_RDWR | O_NOCTTY);
+    int fd = open(deviceName, O_RDWR | O_NOCTTY | O_SYNC);
     if (fd < 0) {
         systemError("open", "Error opening %s: %s\n", deviceName, strerror(errno));
         return false;
