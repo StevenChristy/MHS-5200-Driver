@@ -118,7 +118,7 @@ int main( int argc, const char *argv[] )
             
             commandChain.push_back([&](){
                 for ( int channel = 1; channel <= 2; channel++ ) {
-                    printf("%d: %8.2fHz\n", channel, signalGenerator.getFrequency(channel) );
+                    printf("%d: %2.3fV %8.2fHz %2.1f%% Duty\n", channel, signalGenerator.getAmplitude(channel), signalGenerator.getFrequency(channel), signalGenerator.getDutyCycle(channel) );
                 }
             });
         };
@@ -141,7 +141,7 @@ int main( int argc, const char *argv[] )
                 int activeChannel = signalGenerator.getCurrentChannel();
                 if ( currentChannel != activeChannel )
                     signalGenerator.setCurrentChannel(currentChannel);
-                signalGenerator.setCurrentChannelStatus(true);
+                signalGenerator.setCurrentChannelStatus(false);
                 if ( currentChannel != activeChannel )    
                     signalGenerator.setCurrentChannel(activeChannel);
             });

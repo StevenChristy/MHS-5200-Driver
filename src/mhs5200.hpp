@@ -2,8 +2,6 @@
 
 #define MHS5200_BUFFER_SIZE 128
 
-
-
 class MHS5200Driver
 {
 protected:
