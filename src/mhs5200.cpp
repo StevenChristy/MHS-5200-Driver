@@ -11,7 +11,7 @@
 #include "mhs5200.hpp"
 
 MHS5200Driver::MHS5200Driver() : m_fileDescriptor(0), m_maxAmplitude(20), m_attenuationMax(2), 
-    m_minAmplitude(0.005), m_baudRate(57600), m_outputDebugInfo(false) 
+    m_minAmplitude(0.005), m_baudRate(B57600), m_outputDebugInfo(false) 
 {
 }
 
