@@ -11,6 +11,33 @@
 
 using namespace std;
 
+const char *waveToString( MHS5200Driver::WaveType wave ) {
+    switch ( wave ) {
+        case MHS5200Driver::WaveType::Sine: return "Sine";
+        case MHS5200Driver::WaveType::Square: return "Square";
+        case MHS5200Driver::WaveType::Triangle: return "Tri";
+        case MHS5200Driver::WaveType::Sawtooth: return "Saw";
+        case MHS5200Driver::WaveType::SawtoothReverse: return "SawRev";
+        case MHS5200Driver::WaveType::Arbitrary0: return "Arb0";
+        case MHS5200Driver::WaveType::Arbitrary1: return "Arb1";
+        case MHS5200Driver::WaveType::Arbitrary2: return "Arb2";
+        case MHS5200Driver::WaveType::Arbitrary3: return "Arb3";
+        case MHS5200Driver::WaveType::Arbitrary4: return "Arb4";
+        case MHS5200Driver::WaveType::Arbitrary5: return "Arb5";
+        case MHS5200Driver::WaveType::Arbitrary6: return "Arb6";
+        case MHS5200Driver::WaveType::Arbitrary7: return "Arb7";
+        case MHS5200Driver::WaveType::Arbitrary8: return "Arb8";
+        case MHS5200Driver::WaveType::Arbitrary9: return "Arb9";
+        case MHS5200Driver::WaveType::Arbitrary10: return "Arb10";
+        case MHS5200Driver::WaveType::Arbitrary11: return "Arb11";
+        case MHS5200Driver::WaveType::Arbitrary12: return "Arb12";
+        case MHS5200Driver::WaveType::Arbitrary13: return "Arb13";
+        case MHS5200Driver::WaveType::Arbitrary14: return "Arb14";
+        case MHS5200Driver::WaveType::Arbitrary15: return "Arb15";
+    }
+    return nullptr;
+}
+
 bool parseInt(const char *str, int &value) {
     char *p = nullptr;
     int i = (int) strtol(str, &p, 10);
@@ -118,7 +145,7 @@ int main( int argc, const char *argv[] )
             
             commandChain.push_back([&](){
                 for ( int channel = 1; channel <= 2; channel++ ) {
-                    printf("%d: %2.3fV %8.2fHz %2.1f%% Duty\n", channel, signalGenerator.getAmplitude(channel), signalGenerator.getFrequency(channel), signalGenerator.getDutyCycle(channel) );
+                    printf("%d: %c%-6s %6.3fV  %11.2fHz  %4.1f%% Duty  %3d\u00B0 Phase  %4d%% Offset\n", channel, signalGenerator.getInverted(channel) ? '~' : ' ', waveToString(signalGenerator.getWaveType(channel)), signalGenerator.getAmplitude(channel), signalGenerator.getFrequency(channel), signalGenerator.getDutyCycle(channel), signalGenerator.getPhaseOffset(channel), signalGenerator.getOffset(channel) );
                 }
             });
         };
