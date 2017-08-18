@@ -192,6 +192,15 @@ public:
      * @return True on success
      */
     bool setCurrentChannelStatus(bool onOff);
+    
+    /**
+     * Set arbitrary wave form pattern.
+     * 
+     * @param arbitrary The arbitrary wave form to set (0-15).
+     * @param bytes The array of arbitrary wave form data.
+     * @return True on success.
+     */
+    bool setArbitrary(int arbitrary, const int values[1024]);
 
     /**
      * Save settings in device memory slot.

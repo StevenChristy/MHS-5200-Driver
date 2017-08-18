@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <stdarg.h>
+#include <sys/ioctl.h>
 #include "mhs5200.hpp"
 
 MHS5200Driver::MHS5200Driver() : m_fileDescriptor(0), m_maxAmplitude(20), m_attenuationMax(2), 
@@ -67,16 +68,24 @@ void MHS5200Driver::disconnect() {
 }
 
 bool MHS5200Driver::connect(const char *deviceName) {
-    int fd = open(deviceName, O_RDWR | O_NOCTTY | O_SYNC);
+    int fd = open(deviceName, O_RDWR | O_NOCTTY);
     if (fd < 0) {
         systemError("open", "Error opening %s: %s\n", deviceName, strerror(errno));
+        return false;
+    }
+    
+    if ( ioctl(fd, TIOCEXCL) < 0 ) {
+        systemError("ioctl", "Error locking %s: %s\n", deviceName, strerror(errno));
+        if ( close(fd) != 0 ) {
+            systemError("close", "Error from close: %s\n", strerror(errno));
+        }
         return false;
     }
 
     struct termios tty;
 
     if (tcgetattr(fd, &saveTTY) < 0) {
-        systemError("tcgetattr", "Error opening %s: %s\n", deviceName, strerror(errno));
+        systemError("tcgetattr", "Error getting tty attributes from %s: %s\n", deviceName, strerror(errno));
         if ( close(fd) != 0 ) {
             systemError("close", "Error from close: %s\n", strerror(errno));
         }
@@ -433,6 +442,30 @@ bool MHS5200Driver::setCurrentChannelStatus(bool onOff) {
         }
     }
     return false;
+}
+
+bool MHS5200Driver::setArbitrary(int arbitrary, const int values[1024]) {
+    debugInfo("function", -1, __FUNCTION__);
+    char buffer[1024];
+    char buffer2[MHS5200_BUFFER_SIZE];
+    int p = 0;
+    for ( int chunk = 0; chunk < 16; chunk++ ) {
+        sprintf(buffer, ":a%1X%1X", arbitrary, chunk);
+        for ( int c = 0; c < 64; c++ ) {
+            if (c!=0)
+                strcat(buffer, ",");
+            sprintf(buffer2, "%d", (int)values[p++]);
+            strcat(buffer, buffer2);
+        }
+        strcat(buffer, "\n");
+        if ( rawCommand(buffer) ) {
+            if ( rawResponse() ) {
+                if ( strcmp(m_responseBuffer, "ok") != 0 )
+                    return false;
+            }
+        }
+    }
+    return true;
 }
 
 bool MHS5200Driver::saveSettings(int slot) {

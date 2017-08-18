@@ -8,7 +8,8 @@
 #include <string>
 #include <string.h>
 #include <stdlib.h>
-
+#include <fstream>
+#include <sstream>
 using namespace std;
 
 const char *waveToString( MHS5200Driver::WaveType wave ) {
@@ -72,6 +73,15 @@ void raise_expected_argument( const char *command, const char *argnickname, cons
     throw ss.str();
 }
 
+void raise_error_parsing_file( const char *command, const char *fileName ) {
+    stringstream ss;
+    ss << "Error: Parsing file "<< fileName << " in "  << command << ".";
+    throw ss.str();
+}
+
+
+
+
 int main( int argc, const char *argv[] ) 
 {
     const char *deviceName;
@@ -91,7 +101,8 @@ int main( int argc, const char *argv[] )
             printf("\tstatus\t\t\tShows this command information.\n");
             printf("\tfreq, frequency <hz>\tSet frequency in hz.\n");
             printf("\tduty <percent>\t\tSet duty cycle percent.\n");
-            printf("\tamplitude <volts>\t\tSet peek to peek amplitude of the wave.\n");
+            printf("\tamplitude <volts>\tSet peek to peek amplitude of the wave.\n");
+            printf("\tprogram <0-15> <file>\tProgram arbitrary wave form using file.\n");
             printf("\toffset <+/-120>\t\tSets the voltage offset from between -120%% and +120%%.\n");
             printf("\tphase <0-359>\t\tSets the phase angle offset.\n");
             printf("\ton/off\t\t\tTurn the channel on or off (will change the displayed channel).\n");
@@ -99,6 +110,8 @@ int main( int argc, const char *argv[] )
             printf("\tinverse\t\t\tSet the previously selected wave form to be inverted.\n");
             printf("\tstore <0-9>\t\tSave channel settings to memory slot 0-9.\n");
             printf("\tload <0-9>\t\tLoad channel settings from memory slot 0-9.\n");
+            printf("\tprogram <0-15> <file>\tProgram arbitrary wave form.\n");
+            printf("\t\tFile is 1024 lines each line with a value (0-4095 for MHS-5225A).\n");
             
             printf("\n\tWave form selection command:\n");
             printf("\t\tsine\t\tSine wave output.\n");
@@ -351,6 +364,46 @@ int main( int argc, const char *argv[] )
                 raise_expected_more_argments(argv[cmdarg]);
             }            
         };
+        
+        commandParser["program"] = [&](int argc, const char *argv[])->void {
+            int cmdarg = argp++;
+            if ( (argp+1) < argc ) {
+                const char *arg0 = argv[argp++];
+                const char *arg1 = argv[argp++];                
+                int arb;
+                int values[1024];
+                if ( !parseInt(arg0, arb) || arb < 0 || arb > 15 ) {
+                    raise_expected_argument(argv[cmdarg], "<slot #>", "0-15", arg0);
+                }
+
+                try
+                {
+                    std::ifstream csvfile(arg1);
+                    std::string line;
+                    int p = 0;
+                    while (std::getline(csvfile, line) && p < 1024)
+                    {
+                        std::istringstream iss(line);
+                        int value;
+                        if ( iss >> value ) {
+                            values[p++] = value;
+                        } else {
+                            throw line;
+                        }
+                    }
+                }
+                catch(...) 
+                {
+                    raise_error_parsing_file(argv[cmdarg], arg1);
+                }
+                
+                commandChain.push_back([&,arb,values]() {
+                    signalGenerator.setArbitrary(arb, values);
+                });
+            } else {
+                raise_expected_more_argments(argv[cmdarg]);
+            }            
+        }; 
         
         commandParser["freq"] = commandParser["frequency"];
         
