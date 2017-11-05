@@ -103,30 +103,32 @@ int main( int argc, const char *argv[] )
             printf("\tduty <percent>\t\tSet duty cycle percent.\n");
             printf("\tamplitude <volts>\tSet peek to peek amplitude of the wave.\n");
             printf("\tprogram <0-15> <file>\tProgram arbitrary wave form using file.\n");
-            printf("\toffset <+/-120>\t\tSets the voltage offset from between -120%% and +120%%.\n");
+            printf("\toffset <+/-120>\t\tSets the voltage offset from -120%% and +120%%.\n");
             printf("\tphase <0-359>\t\tSets the phase angle offset.\n");
-            printf("\ton/off\t\t\tTurn the channel on or off (will change the displayed channel).\n");
+            printf("\ton/off\t\t\tTurn the channel on or off (*).\n");
             printf("\tactive\t\t\tSet the device to display channel.\n");
-            printf("\tinverse\t\t\tSet the previously selected wave form to be inverted.\n");
+            printf("\tinverse\t\t\tSet the selected wave form to be inverted.\n");
             printf("\tstore <0-9>\t\tSave channel settings to memory slot 0-9.\n");
             printf("\tload <0-9>\t\tLoad channel settings from memory slot 0-9.\n");
             printf("\tprogram <0-15> <file>\tProgram arbitrary wave form.\n");
-            printf("\t\tFile is 1024 lines each line with a value (0-4095 for MHS-5225A).\n");
+            printf("\tsine\t\t\tSine wave output (**).\n");
+            printf("\tsquare\t\t\tSquare wave output (**).\n");
+            printf("\ttriangle\t\tTriangle wave output (**).\n");
+            printf("\tsaw\t\t\tSawtooth / upward slope wave output (**).\n");
+            printf("\treversesaw\t\tReverse sawtooth / downward ramp waveform (**).\n");
+            printf("\tarb <0-15>\t\tArbitrary waveform 0-15 (**).\n\n");
             
-            printf("\n\tWave form selection command:\n");
-            printf("\t\tsine\t\tSine wave output.\n");
-            printf("\t\tsquare\t\tSquare wave output.\n");
-            printf("\t\ttriangle\t\tTriangle wave output.\n");
-            printf("\t\tsaw\t\tSawtooth / upward slope wave output.\n");
-            printf("\t\treversesaw\tReverse sawtooth / downward ramp waveform.\n");
-            printf("\t\tarb <0-15>\tArbitrary waveform 0-15.\n");
-            printf("\n\tUsing a wave form command turns off inverse.\n");
+            printf(" (*) Will also change the displayed channel on the device.\n");
+            printf(" (**) Using a wave form command turns off inverse.\n\n");
             
+            printf("Arbitrary wave form programming:\n");
+            printf("The file is 1024 lines, each line with a value. The value range depends \n");
+            printf("on the signal generator and is 0-4095 for MHS-5225A (12bit samples).\n\n");
             
-            printf("\n\nMost commands are executed in the order given so commands like channel will affect certain subsequent commands.\n\nExample: %s /dev/ttyUSB0 channel 1 off square inverse freq 12345678.12 on\n", argv[0]);
-            printf("The above example turns off channel 1, sets waveform to inverted sine wave of a given frequency\n");
-            printf("then turns the channel back on.\n");
-            printf("\nYou can combine commands in any order, switching channels at will. All commands will be executed in the specified order\nonly after validating that the command line does not contain errors.\n");
+            printf("General instructions:\n");
+            printf("Most commands are executed in the order given so commands like channel will\naffect certain subsequent commands.\n\nExample: \n%s /dev/ttyUSB0 channel 1 off square inverse freq 12345678.12 on\n\n", argv[0]);
+            printf("The above example turns off channel 1, sets waveform to inverted sine wave of a\ngiven frequency then turns the channel back on.\n");
+            printf("\nYou can combine commands in any order, switching channels at will. All commands\nwill be executed in the specified order only after validating that the command\nline does not contain errors.\n");
             exit(0);
         };
         
