@@ -8,7 +8,7 @@ A small project to create a Linux commandline interface for the MHS-5200 Signal 
 Usage: mhs5200 <tty device> <command list>
 
  Command List:
-	-?, --help		Shows this information and terminate.
+	-?, --help		Shows this information.
 	channel 1/2		Set channel to use for subsequent commands.
 	debug			Output debug trace information.
 	status			Shows this command information.
