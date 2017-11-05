@@ -35,13 +35,13 @@ Usage: mhs5200 <tty device> <command list>
  (**) Using a wave form command turns off inverse.
 ```
 
-Arbitrary wave form programming:
+## Arbitrary Wave Form Programming
 The file is 1024 lines, each line with a value. The value range depends on the signal generator and is 0-4095 for MHS-5225A (12bit samples).
 
-General instructions:
+## General Instructions
 Most commands are executed in the order given so commands like channel will affect certain subsequent commands.
 
-Example: 
+### Example
 `mhs5200 /dev/ttyUSB0 channel 1 off square inverse freq 12345678.12 on`
 
 The above example turns off channel 1, sets waveform to inverted sine wave of a given frequency then turns the channel back on.
